@@ -1,8 +1,7 @@
-﻿namespace Application.Dto.SubscriptionDto
+﻿namespace Application.Dto.SubscriptionDto;
+
+public class SubscriptionUpdateDto
 {
-    public class SubscriptionUpdateDto
-    {
-        public int UserId { get; set; }
-        public int FandomId { get; set; }
-    }
+    public int UserId { get; set; }
+    public int FandomId { get; set; }
 }

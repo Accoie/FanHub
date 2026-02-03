@@ -1,10 +1,9 @@
-﻿namespace Application.Tools
+﻿namespace Application.Tools;
+
+public interface IImageTools
 {
-    public interface IImageTools
-    {
-        Task<string> SaveImageAsync( IFile image );
-        byte[] GetImage( string imageName );
-        Task DeleteImageAsync( string imageUrl );
-        Task<bool> TryDeleteImageAsync( string imagePath );
-    }
+    Task<string> SaveImageAsync(IFile image);
+    byte[] GetImage(string imageName);
+    Task DeleteImageAsync(string imageUrl);
+    Task<bool> TryDeleteImageAsync(string imagePath);
 }

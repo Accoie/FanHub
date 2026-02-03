@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+
 using FluentValidation;
 
 namespace Domain.Validators
@@ -7,22 +8,22 @@ namespace Domain.Validators
     {
         public CommentValidator()
         {
-            RuleFor( x => x.Content )
-                .NotEmpty().WithMessage( "Текст комментария не может быть пустым" )
-                .MinimumLength( 1 ).WithMessage( "Комментарий должен содержать хотя бы 1 символ" )
-                .MaximumLength( 2000 ).WithMessage( "Комментарий не может превышать 2000 символов" )
-                .Must( content => !string.IsNullOrWhiteSpace( content ) ).WithMessage( "Комментарий не может состоять только из пробелов" );
+            RuleFor(x => x.Content)
+                .NotEmpty().WithMessage("Текст комментария не может быть пустым")
+                .MinimumLength(1).WithMessage("Комментарий должен содержать хотя бы 1 символ")
+                .MaximumLength(2000).WithMessage("Комментарий не может превышать 2000 символов")
+                .Must(content => !string.IsNullOrWhiteSpace(content)).WithMessage("Комментарий не может состоять только из пробелов");
 
-            RuleFor( x => x.CommentDate )
-                .NotEmpty().WithMessage( "Дата комментария обязательна" )
-                .LessThanOrEqualTo( DateTime.UtcNow.AddMinutes( 1 ) ).WithMessage( "Дата комментария не может быть в будущем" )
-                .GreaterThanOrEqualTo( DateTime.UtcNow.AddYears( -1 ) ).WithMessage( "Дата комментария слишком старая" );
+            RuleFor(x => x.CommentDate)
+                .NotEmpty().WithMessage("Дата комментария обязательна")
+                .LessThanOrEqualTo(DateTime.UtcNow.AddMinutes(1)).WithMessage("Дата комментария не может быть в будущем")
+                .GreaterThanOrEqualTo(DateTime.UtcNow.AddYears(-1)).WithMessage("Дата комментария слишком старая");
 
-            RuleFor( x => x.PostId )
-                .GreaterThan( 0 ).WithMessage( "ID поста должен быть положительным числом" );
+            RuleFor(x => x.PostId)
+                .GreaterThan(0).WithMessage("ID поста должен быть положительным числом");
 
-            RuleFor( x => x.UserId )
-                .GreaterThan( 0 ).WithMessage( "ID пользователя должен быть положительным числом" );
+            RuleFor(x => x.UserId)
+                .GreaterThan(0).WithMessage("ID пользователя должен быть положительным числом");
         }
     }
 }

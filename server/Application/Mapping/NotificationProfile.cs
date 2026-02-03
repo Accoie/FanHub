@@ -1,18 +1,19 @@
 ﻿using Application.Dto.NotificationDto;
+
 using AutoMapper;
+
 using Domain.Entities;
 
-namespace Application.Mapping
+namespace Application.Mapping;
+
+public class NotificationProfile : Profile
 {
-    public class NotificationProfile : Profile
+    public NotificationProfile()
     {
-        public NotificationProfile()
-        {
-            CreateMap<FandomNotification, FandomNotificationReadDto>();
+        CreateMap<FandomNotification, FandomNotificationReadDto>();
 
-            CreateMap<FandomNotificationCreateDto, FandomNotification>();
+        CreateMap<FandomNotificationCreateDto, FandomNotification>();
 
-            CreateMap<FandomNotificationUpdateDto, FandomNotification>();
-        }
+        CreateMap<FandomNotificationUpdateDto, FandomNotification>();
     }
 }

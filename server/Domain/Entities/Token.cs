@@ -2,7 +2,7 @@
 {
     public class Token
     {
-        public Token( string value, DateTime expireDate )
+        public Token(string value, DateTime expireDate)
         {
             Value = value;
             ExpireDate = expireDate;

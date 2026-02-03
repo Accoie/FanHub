@@ -1,4 +1,5 @@
 ﻿using Application.Dto.EventDto;
+
 using AutoMapper;
 
 namespace WebApi.Mapping

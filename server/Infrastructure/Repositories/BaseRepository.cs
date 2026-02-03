@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
+
 using Domain.Repositories;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
@@ -8,14 +10,14 @@ namespace Infrastructure.Repositories
     {
         protected readonly DbSet<TEntity> _entities;
 
-        public BaseRepository( FanHubDbContext fanhubDbContext )
+        public BaseRepository(FanHubDbContext fanhubDbContext)
         {
             _entities = fanhubDbContext.Set<TEntity>();
         }
 
-        public async Task CreateAsync( TEntity entity )
+        public async Task CreateAsync(TEntity entity)
         {
-            await _entities.AddAsync( entity );
+            await _entities.AddAsync(entity);
         }
 
         public async Task<List<TEntity>> GetAllAsync()
@@ -23,29 +25,29 @@ namespace Infrastructure.Repositories
             return await _entities.AsNoTracking().ToListAsync();
         }
 
-        public async Task<TEntity?> GetByIdAsync( int id )
+        public async Task<TEntity?> GetByIdAsync(int id)
         {
-            return await _entities.FindAsync( id );
+            return await _entities.FindAsync(id);
         }
 
-        public void Update( TEntity entity )
+        public void Update(TEntity entity)
         {
-            _entities.Update( entity );
+            _entities.Update(entity);
         }
 
-        public void Delete( TEntity entity )
+        public void Delete(TEntity entity)
         {
-            _entities.Remove( entity );
+            _entities.Remove(entity);
         }
 
-        public async Task<TEntity?> FindAsync( Expression<Func<TEntity, bool>> predicate )
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _entities.FirstOrDefaultAsync( predicate );
+            return await _entities.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<List<TEntity>> FindAllAsync( Expression<Func<TEntity, bool>> predicate )
+        public async Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _entities.Where( predicate ).AsNoTracking().ToListAsync();
+            return await _entities.Where(predicate).AsNoTracking().ToListAsync();
         }
     }
 }

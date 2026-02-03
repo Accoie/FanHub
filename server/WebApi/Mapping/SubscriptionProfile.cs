@@ -1,4 +1,5 @@
 ﻿using Application.Dto.SubscriptionDto;
+
 using AutoMapper;
 
 namespace WebApi.Mapping

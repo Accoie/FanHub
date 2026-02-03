@@ -1,10 +1,9 @@
 ﻿using Application.Services.Auth;
 
-namespace Application.Dto.UserDto
+namespace Application.Dto.UserDto;
+
+public class UserAuthResultDto
 {
-    public class UserAuthResultDto
-    {
-        public int UserId { get; set; }
-        public Token Token { get; set; } = null!;
-    }
+    public int UserId { get; set; }
+    public Token Token { get; set; } = null!;
 }

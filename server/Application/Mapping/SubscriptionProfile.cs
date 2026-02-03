@@ -1,18 +1,19 @@
 ﻿using Application.Dto.SubscriptionDto;
+
 using AutoMapper;
+
 using Domain.Entities;
 
-namespace Application.Mapping
+namespace Application.Mapping;
+
+public class SubscriptionProfile : Profile
 {
-    public class SubscriptionProfile : Profile
+    public SubscriptionProfile()
     {
-        public SubscriptionProfile()
-        {
-            CreateMap<Subscription, SubscriptionReadDto>();
+        CreateMap<Subscription, SubscriptionReadDto>();
 
-            CreateMap<SubscriptionCreateDto, Subscription>();
+        CreateMap<SubscriptionCreateDto, Subscription>();
 
-            CreateMap<SubscriptionUpdateDto, Subscription>();
-        }
+        CreateMap<SubscriptionUpdateDto, Subscription>();
     }
 }

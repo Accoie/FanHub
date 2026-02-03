@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+
 using System.Security.Claims;
 
 namespace WebApi.Hubs
@@ -9,26 +10,26 @@ namespace WebApi.Hubs
     {
         public override async Task OnConnectedAsync()
         {
-            string? userId = Context.User?.FindFirst( ClaimTypes.NameIdentifier )?.Value;
+            string? userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if ( userId is not null )
+            if (userId is not null)
             {
-                await Groups.AddToGroupAsync( Context.ConnectionId, $"user_{userId}" );
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
             }
 
             await base.OnConnectedAsync();
         }
 
-        public override async Task OnDisconnectedAsync( Exception? exception )
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            string? userId = Context.User?.FindFirst( ClaimTypes.NameIdentifier )?.Value;
+            string? userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if ( userId is not null )
+            if (userId is not null)
             {
-                await Groups.RemoveFromGroupAsync( Context.ConnectionId, $"user_{userId}" );
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user_{userId}");
             }
 
-            await base.OnDisconnectedAsync( exception );
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }

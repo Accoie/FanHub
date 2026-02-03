@@ -1,21 +1,20 @@
 ﻿using Domain.Enums;
 
-namespace Application.Dto.UserDto
+namespace Application.Dto.UserDto;
+
+public class UserReadDto
 {
-    public class UserReadDto
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Username { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
 
-        public string Login { get; set; } = string.Empty;
+    public string Login { get; set; } = string.Empty;
 
-        public string PasswordHash { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
 
-        public string? Avatar { get; set; }
+    public string? Avatar { get; set; }
 
-        public UserRole Role { get; set; }
+    public UserRole Role { get; set; }
 
-        public DateTime RegistrationDate { get; set; }
-    }
+    public DateTime RegistrationDate { get; set; }
 }

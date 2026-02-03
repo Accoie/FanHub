@@ -1,41 +1,42 @@
 ﻿using Application.Dto.GameDto;
+
 using AutoMapper;
+
 using Domain.Entities;
 
-namespace Application.Mapping
+namespace Application.Mapping;
+
+public class GameProfile : Profile
 {
-    public class GameProfile : Profile
+    public GameProfile()
     {
-        public GameProfile()
-        {
-            CreateMap<Game, GameReadDto>();
+        CreateMap<Game, GameReadDto>();
 
-            CreateMap<Game, GameStatsDto>()
-                .ForMember( dest => dest.FandomsCount,
-                    opt => opt.MapFrom( src => src.Fandoms.Count ) );
+        CreateMap<Game, GameStatsDto>()
+            .ForMember(dest => dest.FandomsCount,
+                opt => opt.MapFrom(src => src.Fandoms.Count));
 
-            CreateMap<GameCreateDto, Game>();
+        CreateMap<GameCreateDto, Game>();
 
-            CreateMap<GameUpdateDto, Game>()
-                .ForAllMembers( opts => opts.Condition( ( src, dest, srcMember ) =>
+        CreateMap<GameUpdateDto, Game>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) =>
+            {
+                if (srcMember is null)
                 {
-                    if ( srcMember is null )
-                    {
-                        return false;
-                    }
+                    return false;
+                }
 
-                    if ( srcMember is DateTime dateTimeValue && dateTimeValue == default )
-                    {
-                        return false;
-                    }
+                if (srcMember is DateTime dateTimeValue && dateTimeValue == default)
+                {
+                    return false;
+                }
 
-                    if ( srcMember is string stringValue && string.IsNullOrEmpty( stringValue ) )
-                    {
-                        return false;
-                    }
+                if (srcMember is string stringValue && string.IsNullOrEmpty(stringValue))
+                {
+                    return false;
+                }
 
-                    return true;
-                } ) );
-        }
+                return true;
+            }));
     }
 }

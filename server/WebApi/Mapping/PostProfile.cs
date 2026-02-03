@@ -1,4 +1,5 @@
 ﻿using Application.Dto.PostDto;
+
 using AutoMapper;
 
 namespace WebApi.Mapping

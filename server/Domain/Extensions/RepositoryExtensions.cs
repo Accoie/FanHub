@@ -4,13 +4,13 @@ namespace Domain.Extensions
 {
     public static class RepositoryExtensions
     {
-        public static async Task<TEntity> GetByIdAsyncThrow<TEntity>( this IBaseRepository<TEntity> repository,
-    int id ) where TEntity : class
+        public static async Task<TEntity> GetByIdAsyncThrow<TEntity>(this IBaseRepository<TEntity> repository,
+    int id) where TEntity : class
         {
-            TEntity? entity = await repository.GetByIdAsync( id );
-            if ( entity is null )
+            TEntity? entity = await repository.GetByIdAsync(id);
+            if (entity is null)
             {
-                throw new KeyNotFoundException( $"{typeof( TEntity ).Name} with id {id} is not found" );
+                throw new KeyNotFoundException($"{typeof(TEntity).Name} with id {id} is not found");
             }
 
             return entity;

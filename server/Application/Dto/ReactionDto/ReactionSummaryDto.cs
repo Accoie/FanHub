@@ -1,11 +1,10 @@
 ﻿using Domain.Enums;
 
-namespace Application.Dto.ReactionDto
-{
-    public class ReactionSummaryDto
-    {
-        public ReactionType ReactionType { get; set; }
+namespace Application.Dto.ReactionDto;
 
-        public int Count { get; set; }
-    }
+public class ReactionSummaryDto
+{
+    public ReactionType ReactionType { get; set; }
+
+    public int Count { get; set; }
 }

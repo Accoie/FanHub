@@ -3,194 +3,200 @@ using Application.Dto.NotificationDto;
 using Application.Dto.PostDto;
 using Application.Services.Interfaces;
 using Application.Tools;
+
 using AutoMapper;
+
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Extensions;
 using Domain.Foundations;
 using Domain.Repositories;
+
 using FluentValidation;
+
 using Microsoft.Extensions.Logging;
 
-namespace Application.Services
+namespace Application.Services;
+
+public class PostService : BaseService<Post, PostCreateDto, PostReadDto, PostUpdateDto>, IPostService
 {
-    public class PostService : BaseService<Post, PostCreateDto, PostReadDto, PostUpdateDto>, IPostService
+    private readonly IFandomService _fandomService;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IPostRepository _postRepository;
+    private readonly IImageTools _imageTools;
+    private readonly INotificationRepository _notificationRepository;
+    private readonly INotificationViewedRepository _notificationViewedRepository;
+
+    public PostService(
+        IPostRepository repository,
+        IFandomService fandomService,
+        ICategoryRepository categoryRepository,
+        IUserRepository userRepository,
+        IMapper mapper,
+        IValidator<Post> validator,
+        ILogger<PostService> logger,
+        IUnitOfWork unitOfWork,
+        IImageTools imageTools,
+        INotificationRepository notificationRepository,
+        INotificationViewedRepository notificationViewedRepository)
+        : base(repository, mapper, validator, logger, unitOfWork)
     {
-        private readonly IFandomService _fandomService;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IPostRepository _postRepository;
-        private readonly IImageTools _imageTools;
-        private readonly INotificationRepository _notificationRepository;
-        private readonly INotificationViewedRepository _notificationViewedRepository;
+        _fandomService = fandomService;
+        _categoryRepository = categoryRepository;
+        _userRepository = userRepository;
+        _postRepository = repository;
+        _imageTools = imageTools;
+        _notificationRepository = notificationRepository;
+        _notificationViewedRepository = notificationViewedRepository;
+    }
 
-        public PostService( IPostRepository repository,
-            IFandomService fandomService,
-            ICategoryRepository categoryRepository,
-            IUserRepository userRepository,
-            IMapper mapper,
-            IValidator<Post> validator,
-            ILogger<PostService> logger,
-            IUnitOfWork unitOfWork,
-            IImageTools imageTools,
-            INotificationRepository notificationRepository,
-            INotificationViewedRepository notificationViewedRepository ) : base( repository, mapper, validator, logger, unitOfWork )
+    public override async Task<List<PostReadDto>> GetAll()
+    {
+        List<Post> posts = await _postRepository.GetAllWithStatsAsync();
+
+        return _mapper.Map<List<PostReadDto>>(posts);
+    }
+
+    public async Task<List<PostStatsDto>> SearchByCategoryNameAsync(string categoryName)
+    {
+        List<Post> posts = await _postRepository.FindByCategoryNameAsync(categoryName);
+
+        return _mapper.Map<List<PostStatsDto>>(posts);
+    }
+
+    public async Task<List<PostStatsDto>> SearchByCategoryIdAsync(int categoryId)
+    {
+        List<Post> posts = await _postRepository.GetAllByCategoryId(categoryId);
+
+        return _mapper.Map<List<PostStatsDto>>(posts);
+    }
+
+    public async Task<List<PostStatsDto>> SearchByCategoryAsync(string? categoryName = null, int? categoryId = null)
+    {
+        if (!categoryId.HasValue && string.IsNullOrWhiteSpace(categoryName))
         {
-            _fandomService = fandomService;
-            _categoryRepository = categoryRepository;
-            _userRepository = userRepository;
-            _postRepository = repository;
-            _imageTools = imageTools;
-            _notificationRepository = notificationRepository;
-            _notificationViewedRepository = notificationViewedRepository;
+            return new List<PostStatsDto>();
         }
 
-        public override async Task<List<PostReadDto>> GetAll()
-        {
-            List<Post> posts = await _postRepository.GetAllWithStatsAsync();
+        List<Post> posts;
 
-            return _mapper.Map<List<PostReadDto>>( posts );
+        if (categoryId.HasValue)
+        {
+            posts = await _postRepository.GetAllByCategoryId(categoryId.Value);
         }
-        public async Task<List<PostStatsDto>> SearchByCategoryNameAsync( string categoryName )
+        else
         {
-            List<Post> posts = await _postRepository.FindByCategoryNameAsync( categoryName );
-
-            return _mapper.Map<List<PostStatsDto>>( posts );
+            posts = await _postRepository.FindByCategoryNameAsync(categoryName!);
         }
 
-        public async Task<List<PostStatsDto>> SearchByCategoryIdAsync( int categoryId )
-        {
-            List<Post> posts = await _postRepository.GetAllByCategoryId( categoryId );
+        return _mapper.Map<List<PostStatsDto>>(posts);
+    }
 
-            return _mapper.Map<List<PostStatsDto>>( posts );
+    public async Task<List<PostStatsDto>> GetPopularPosts(int? limit = null)
+    {
+        List<Post> posts = await _postRepository.GetPopularPostsAsync(limit);
+
+        return _mapper.Map<List<PostStatsDto>>(posts);
+    }
+
+    public async Task<List<PostStatsDto>> GetPopularPostsByFandom(int fandomId, int? limit = null)
+    {
+        List<Post> posts = await _postRepository.GetPopularPostsByFandomAsync(fandomId, limit);
+
+        return _mapper.Map<List<PostStatsDto>>(posts);
+    }
+
+    public override async Task DeleteAsync(int id)
+    {
+        Post? entity = await _postRepository.GetByIdWithIncludesAsync(id);
+
+        if (entity is null)
+        {
+            throw new KeyNotFoundException($"Post with id {id} is not found");
         }
 
-        public async Task<List<PostStatsDto>> SearchByCategoryAsync( string? categoryName = null, int? categoryId = null )
+        _logger.LogTrace($"{typeof(Post).Name} with id '{id}' was deleted.");
+
+        await CleanupBeforeDelete(entity);
+
+        _repository.Delete(entity);
+
+        await _unitOfWork.CommitAsync();
+    }
+
+    public async Task<PostStatsDto> GetPostWithStatsById(int id)
+    {
+        Post? f = await _postRepository.GetByIdWithIncludesAsync(id);
+
+        if (f is null)
         {
-            if ( !categoryId.HasValue && string.IsNullOrWhiteSpace( categoryName ) )
-            {
-                return new List<PostStatsDto>();
-            }
-
-            List<Post> posts;
-
-            if ( categoryId.HasValue )
-            {
-                posts = await _postRepository.GetAllByCategoryId( categoryId.Value );
-            }
-            else
-            {
-                posts = await _postRepository.FindByCategoryNameAsync( categoryName! );
-            }
-
-            return _mapper.Map<List<PostStatsDto>>( posts );
+            throw new KeyNotFoundException($"Post with id {id} is not found");
         }
 
-        public async Task<List<PostStatsDto>> GetPopularPosts( int? limit = null )
-        {
-            List<Post> posts = await _postRepository.GetPopularPostsAsync( limit );
+        return _mapper.Map<PostStatsDto>(f);
+    }
 
-            return _mapper.Map<List<PostStatsDto>>( posts );
+    protected override Post InitializeEntity(PostCreateDto dto)
+    {
+        Post entity = new();
+
+        entity.PostDate = DateTime.UtcNow;
+
+        return entity;
+    }
+
+    protected override async Task CleanupBeforeUpdate(Post entity, PostUpdateDto updateDto)
+    {
+        if (entity.MediaContent != updateDto.MediaContent && !string.IsNullOrEmpty(entity.MediaContent))
+        {
+            await _imageTools.TryDeleteImageAsync(entity.MediaContent);
+        }
+    }
+
+    protected override async Task CheckUnique(Post post)
+    {
+        await _fandomService.GetById(post.FandomId);
+        await _userRepository.GetByIdAsyncThrow(post.UserId);
+        await _categoryRepository.GetByIdAsyncThrow(post.CategoryId);
+    }
+
+    protected override async Task CleanupBeforeDelete(Post entity)
+    {
+        if (!string.IsNullOrEmpty(entity.MediaContent))
+        {
+            await _imageTools.TryDeleteImageAsync(entity.MediaContent);
         }
 
-        public async Task<List<PostStatsDto>> GetPopularPostsByFandom( int fandomId, int? limit = null )
-        {
-            List<Post> posts = await _postRepository.GetPopularPostsByFandomAsync( fandomId, limit );
+        List<FandomNotification> notifications = await _notificationRepository.FindAllAsync(
+            n => n.NotifierId == entity.Id && n.Type == FandomNotificationType.NewPost);
 
-            return _mapper.Map<List<PostStatsDto>>( posts );
+        List<NotificationViewed> allVieweds = new();
+        foreach (FandomNotification notification in notifications)
+        {
+            List<NotificationViewed> vieweds = await _notificationViewedRepository
+                .GetViewedNotificationsByNotificationIdAsync(notification.Id);
+            allVieweds.AddRange(vieweds);
         }
 
-        protected override Post InitializeEntity( PostCreateDto dto )
+        if (allVieweds.Count > 0)
         {
-            Post entity = new();
-
-            entity.PostDate = DateTime.UtcNow;
-
-            return entity;
+            await _notificationViewedRepository.BulkDeleteAsync(allVieweds);
         }
 
-        protected override async Task CleanupBeforeUpdate( Post entity, PostUpdateDto updateDto )
+        foreach (FandomNotification notification in notifications)
         {
-            if ( entity.MediaContent != updateDto.MediaContent && !string.IsNullOrEmpty( entity.MediaContent ) )
-            {
-                await _imageTools.TryDeleteImageAsync( entity.MediaContent );
-            }
+            _notificationRepository.Delete(notification);
         }
+    }
 
-        protected override async Task CheckUnique( Post post )
+    protected override async Task AfterCreate(Post entity)
+    {
+        await _fandomService.Notify(new FandomNotificationCreateDto
         {
-            await _fandomService.GetById( post.FandomId );
-            await _userRepository.GetByIdAsyncThrow( post.UserId );
-            await _categoryRepository.GetByIdAsyncThrow( post.CategoryId );
-        }
-
-        public override async Task DeleteAsync( int id )
-        {
-            Post? entity = await _postRepository.GetByIdWithIncludesAsync( id );
-
-            if ( entity is null )
-            {
-                throw new KeyNotFoundException( $"Post with id {id} is not found" );
-            }
-
-            _logger.LogTrace( $"{typeof( Post ).Name} with id '{id}' was deleted." );
-
-            await CleanupBeforeDelete( entity );
-
-            _repository.Delete( entity );
-
-            await _unitOfWork.CommitAsync();
-        }
-
-        protected override async Task CleanupBeforeDelete( Post entity )
-        {
-            if ( !string.IsNullOrEmpty( entity.MediaContent ) )
-            {
-                await _imageTools.TryDeleteImageAsync( entity.MediaContent );
-            }
-
-            List<FandomNotification> notifications = await _notificationRepository.FindAllAsync(
-                n => n.NotifierId == entity.Id && n.Type == FandomNotificationType.NewPost );
-
-            List<NotificationViewed> allVieweds = new();
-            foreach ( FandomNotification notification in notifications )
-            {
-                List<NotificationViewed> vieweds = await _notificationViewedRepository
-                    .GetViewedNotificationsByNotificationIdAsync( notification.Id );
-                allVieweds.AddRange( vieweds );
-            }
-
-            if ( allVieweds.Count > 0 )
-            {
-                await _notificationViewedRepository.BulkDeleteAsync( allVieweds );
-            }
-
-            foreach ( FandomNotification notification in notifications )
-            {
-                _notificationRepository.Delete( notification );
-            }
-        }
-
-        protected override async Task AfterCreate( Post entity )
-        {
-            await _fandomService.Notify( new FandomNotificationCreateDto
-            {
-                FandomId = entity.FandomId,
-                NotifierId = entity.Id,
-                Type = FandomNotificationType.NewPost,
-            } );
-        }
-
-        public async Task<PostStatsDto> GetPostWithStatsById( int id )
-        {
-            Post? f = await _postRepository.GetByIdWithIncludesAsync( id );
-
-            if ( f is null )
-            {
-                throw new KeyNotFoundException( $"Post with id {id} is not found" );
-            }
-
-            return _mapper.Map<PostStatsDto>( f );
-        }
+            FandomId = entity.FandomId,
+            NotifierId = entity.Id,
+            Type = FandomNotificationType.NewPost,
+        });
     }
 }

@@ -6,7 +6,7 @@ namespace WebApi.Adapters
     {
         private IFormFile _formFile;
 
-        public FormFileAdapter( IFormFile formFile )
+        public FormFileAdapter(IFormFile formFile)
         {
             _formFile = formFile;
         }

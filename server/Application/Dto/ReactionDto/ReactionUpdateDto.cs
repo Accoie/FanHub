@@ -1,10 +1,9 @@
 ﻿using Domain.Enums;
 
-namespace Application.Dto.ReactionDto
+namespace Application.Dto.ReactionDto;
+
+public class ReactionUpdateDto
 {
-    public class ReactionUpdateDto
-    {
-        public DateTime Date { get; set; }
-        public ReactionType Type { get; set; }
-    }
+    public DateTime Date { get; set; }
+    public ReactionType Type { get; set; }
 }

@@ -1,9 +1,8 @@
-﻿namespace Application.Dto.CommentDto
+﻿namespace Application.Dto.CommentDto;
+
+public class CommentCreateDto
 {
-    public class CommentCreateDto
-    {
-        public int PostId { get; set; }
-        public int UserId { get; set; }
-        public string Content { get; set; } = string.Empty;
-    }
+    public int PostId { get; set; }
+    public int UserId { get; set; }
+    public string Content { get; set; } = string.Empty;
 }

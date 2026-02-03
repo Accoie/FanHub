@@ -3,6 +3,6 @@ namespace Domain.Repositories
 {
     public interface IReactionRepository : IBaseRepository<Reaction>
     {
-        Task<List<Reaction>> GetReactionsByPostIdAsync( int postId );
+        Task<List<Reaction>> GetReactionsByPostIdAsync(int postId);
     }
 }

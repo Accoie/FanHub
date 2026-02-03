@@ -1,7 +1,6 @@
-﻿namespace Application.Dto.CommentDto
+﻿namespace Application.Dto.CommentDto;
+
+public class CommentUpdateDto
 {
-    public class CommentUpdateDto
-    {
-        public string Content { get; set; } = string.Empty;
-    }
+    public string Content { get; set; } = string.Empty;
 }

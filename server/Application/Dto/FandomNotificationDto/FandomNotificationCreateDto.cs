@@ -1,14 +1,13 @@
 ﻿using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.Dto.NotificationDto
+namespace Application.Dto.NotificationDto;
+
+public class FandomNotificationCreateDto
 {
-    public class FandomNotificationCreateDto
-    {
-        public int FandomId { get; set; }
+    public int FandomId { get; set; }
 
-        public int NotifierId { get; set; }
+    public int NotifierId { get; set; }
 
-        public FandomNotificationType Type { get; set; }
-    }
+    public FandomNotificationType Type { get; set; }
 }

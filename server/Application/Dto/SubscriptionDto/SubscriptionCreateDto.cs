@@ -1,8 +1,7 @@
-﻿namespace Application.Dto.SubscriptionDto
+﻿namespace Application.Dto.SubscriptionDto;
+
+public class SubscriptionCreateDto
 {
-    public class SubscriptionCreateDto
-    {
-        public int UserId { get; set; }
-        public int FandomId { get; set; }
-    }
+    public int UserId { get; set; }
+    public int FandomId { get; set; }
 }

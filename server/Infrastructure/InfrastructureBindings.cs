@@ -1,13 +1,16 @@
 ﻿using Application.PasswordHasher;
 using Application.Services.Auth;
 using Application.Tools;
+
 using Domain.Foundations;
 using Domain.Repositories;
+
 using Infrastructure.Auth;
 using Infrastructure.Foundations;
 using Infrastructure.PasswordHashers;
 using Infrastructure.Repositories;
 using Infrastructure.Tools;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,10 +21,10 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructure(
             this IServiceCollection services,
-            IConfiguration configuration )
+            IConfiguration configuration)
         {
-            services.AddDbContext<FanHubDbContext>( options =>
-                options.UseSqlServer( configuration.GetConnectionString( "DefaultConnection" ) ) );
+            services.AddDbContext<FanHubDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

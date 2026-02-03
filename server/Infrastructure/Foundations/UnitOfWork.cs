@@ -6,7 +6,7 @@ namespace Infrastructure.Foundations
     {
         FanHubDbContext _dbContext;
 
-        public UnitOfWork( FanHubDbContext dbContext )
+        public UnitOfWork(FanHubDbContext dbContext)
         {
             _dbContext = dbContext;
         }

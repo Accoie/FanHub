@@ -1,15 +1,18 @@
 ﻿using Application.PasswordHasher;
+
 using Domain.Entities;
 using Domain.Enums;
+
 using Infrastructure.Configurations;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
 public class FanHubDbContext : DbContext
 {
-    public FanHubDbContext( DbContextOptions<FanHubDbContext> options, IPasswordHasher hasher )
-        : base( options )
+    public FanHubDbContext(DbContextOptions<FanHubDbContext> options, IPasswordHasher hasher)
+        : base(options)
     {
         _hasher = hasher;
     }
@@ -28,35 +31,35 @@ public class FanHubDbContext : DbContext
     public DbSet<NotificationViewed> NotificationViews { get; set; }
     public DbSet<Category> Categories { get; set; }
 
-    protected override void OnModelCreating( ModelBuilder modelBuilder )
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating( modelBuilder );
+        base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfiguration( new UserConfiguration() );
-        modelBuilder.ApplyConfiguration( new GameConfiguration() );
-        modelBuilder.ApplyConfiguration( new FandomConfiguration() );
-        modelBuilder.ApplyConfiguration( new PostConfiguration() );
-        modelBuilder.ApplyConfiguration( new EventConfiguration() );
-        modelBuilder.ApplyConfiguration( new CommentConfiguration() );
-        modelBuilder.ApplyConfiguration( new ReactionConfiguration() );
-        modelBuilder.ApplyConfiguration( new SubscriptionConfiguration() );
-        modelBuilder.ApplyConfiguration( new FandomNotificationConfiguration() );
-        modelBuilder.ApplyConfiguration( new NotificationViewedConfiguration() );
-        modelBuilder.ApplyConfiguration( new CategoryConfiguration() );
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new GameConfiguration());
+        modelBuilder.ApplyConfiguration(new FandomConfiguration());
+        modelBuilder.ApplyConfiguration(new PostConfiguration());
+        modelBuilder.ApplyConfiguration(new EventConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentConfiguration());
+        modelBuilder.ApplyConfiguration(new ReactionConfiguration());
+        modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
+        modelBuilder.ApplyConfiguration(new FandomNotificationConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationViewedConfiguration());
+        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
     }
 
     public void Seed()
     {
-        if ( !Users.Any( u => u.Role == UserRole.Admin ) )
+        if (!Users.Any(u => u.Role == UserRole.Admin))
         {
-            Users.Add( new User
+            Users.Add(new User
             {
                 Username = "admin",
                 Login = "admin222",
-                PasswordHash = _hasher.Hash( "admin123" ),
+                PasswordHash = _hasher.Hash("admin123"),
                 Role = UserRole.Admin,
                 RegistrationDate = DateTime.UtcNow
-            } );
+            });
 
             SaveChanges();
         }

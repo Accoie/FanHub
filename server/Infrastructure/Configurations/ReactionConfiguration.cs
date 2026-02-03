@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,27 +7,27 @@ namespace Infrastructure.Configurations
 {
     public class ReactionConfiguration : IEntityTypeConfiguration<Reaction>
     {
-        public void Configure( EntityTypeBuilder<Reaction> builder )
+        public void Configure(EntityTypeBuilder<Reaction> builder)
         {
-            builder.HasKey( r => r.Id );
+            builder.HasKey(r => r.Id);
 
-            builder.Property( r => r.UserId )
+            builder.Property(r => r.UserId)
                 .IsRequired();
 
-            builder.Property( r => r.PostId )
+            builder.Property(r => r.PostId)
                 .IsRequired();
 
-            builder.Property( r => r.Date )
+            builder.Property(r => r.Date)
                 .IsRequired();
 
-            builder.Property( r => r.Type )
+            builder.Property(r => r.Type)
                 .IsRequired()
                 .HasConversion<byte>();
 
-            builder.HasIndex( r => r.UserId );
-            builder.HasIndex( r => r.PostId );
-            builder.HasIndex( r => r.Date );
-            builder.HasIndex( r => new { r.UserId, r.PostId } ).IsUnique();
+            builder.HasIndex(r => r.UserId);
+            builder.HasIndex(r => r.PostId);
+            builder.HasIndex(r => r.Date);
+            builder.HasIndex(r => new { r.UserId, r.PostId }).IsUnique();
         }
     }
 }

@@ -1,20 +1,23 @@
 ﻿using Application.Dto.CommentDto;
 using Application.Services.Interfaces;
+
 using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using WebApi.Extensions;
 
 namespace WebApi.Controllers
 {
-    [Route( "/api/comments" )]
+    [Route("/api/comments")]
     [ApiController]
     public class CommentController : ControllerBase
     {
         private ICommentService _commentService;
         private IMapper _mapper;
 
-        public CommentController( ICommentService commentService, IMapper mapper )
+        public CommentController(ICommentService commentService, IMapper mapper)
         {
             _commentService = commentService;
             _mapper = mapper;
@@ -26,54 +29,54 @@ namespace WebApi.Controllers
         {
             IReadOnlyList<CommentShowDto> comments = await _commentService.GetCommentsAsync();
 
-            return Ok( comments );
+            return Ok(comments);
         }
 
-        [HttpGet( "post/{postId}" )]
-        public async Task<ActionResult<List<CommentShowDto>>> GetCommentsByPostId( [FromRoute]
-        int postId )
+        [HttpGet("post/{postId}")]
+        public async Task<ActionResult<List<CommentShowDto>>> GetCommentsByPostId([FromRoute]
+        int postId)
         {
-            IReadOnlyList<CommentShowDto> comments = await _commentService.GetCommentsByPostIdAsync( postId );
+            IReadOnlyList<CommentShowDto> comments = await _commentService.GetCommentsByPostIdAsync(postId);
 
-            return Ok( comments );
+            return Ok(comments);
         }
 
         [Authorize]
-        [HttpGet( "{id}" )]
-        public async Task<ActionResult<CommentReadDto>> GetCommentById( int id )
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CommentReadDto>> GetCommentById(int id)
         {
-            CommentReadDto comment = await _commentService.GetById( id );
+            CommentReadDto comment = await _commentService.GetById(id);
 
-            return Ok( comment );
+            return Ok(comment);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<int>> CreateComment( [FromBody] WebApi.Contracts.CommentDto.CommentCreateDto dto )
+        public async Task<ActionResult<int>> CreateComment([FromBody] WebApi.Contracts.CommentDto.CommentCreateDto dto)
         {
-            CommentCreateDto createDto = _mapper.Map<CommentCreateDto>( dto );
+            CommentCreateDto createDto = _mapper.Map<CommentCreateDto>(dto);
 
             createDto.UserId = this.GetCurrentUserId();
 
-            int id = await _commentService.Create( createDto );
+            int id = await _commentService.Create(createDto);
 
-            return Ok( id );
+            return Ok(id);
         }
 
         [Authorize]
-        [HttpPut( "{id}" )]
-        public async Task<IActionResult> UpdateComment( int id, [FromBody] CommentUpdateDto dto )
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateComment(int id, [FromBody] CommentUpdateDto dto)
         {
-            await _commentService.Update( id, dto );
+            await _commentService.Update(id, dto);
 
             return Ok();
         }
 
         [Authorize]
-        [HttpDelete( "{id}" )]
-        public async Task<IActionResult> DeleteComment( int id )
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteComment(int id)
         {
-            await _commentService.DeleteAsync( id );
+            await _commentService.DeleteAsync(id);
 
             return Ok();
         }

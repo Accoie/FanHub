@@ -1,11 +1,10 @@
 using Application.Dto.NotificationDto;
 
-namespace Application.Services.Interfaces
+namespace Application.Services.Interfaces;
+
+public interface INotificationHubService
 {
-    public interface INotificationHubService
-    {
-        Task SendNotificationToUserAsync( int userId, FandomNotificationReadDto notification );
-        Task SendNotificationToUsersAsync( List<int> userIds, FandomNotificationReadDto notification );
-    }
+    Task SendNotificationToUserAsync(int userId, FandomNotificationReadDto notification);
+    Task SendNotificationToUsersAsync(List<int> userIds, FandomNotificationReadDto notification);
 }
 

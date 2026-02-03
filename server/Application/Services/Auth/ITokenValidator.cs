@@ -1,7 +1,6 @@
-﻿namespace Application.Services.Auth
+﻿namespace Application.Services.Auth;
+
+public interface ITokenValidator
 {
-    public interface ITokenValidator
-    {
-        Task<bool> ValidateTokenAsync( string token );
-    }
+    Task<bool> ValidateTokenAsync(string token);
 }

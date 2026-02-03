@@ -1,18 +1,19 @@
 ﻿using Application.Dto.CategoryDto;
+
 using AutoMapper;
+
 using Domain.Entities;
 
-namespace Application.Mapping
+namespace Application.Mapping;
+
+public class CategoryProfile : Profile
 {
-    public class CategoryProfile : Profile
+    public CategoryProfile()
     {
-        public CategoryProfile()
-        {
-            CreateMap<Category, CategoryReadDto>();
+        CreateMap<Category, CategoryReadDto>();
 
-            CreateMap<CategoryCreateDto, Category>();
+        CreateMap<CategoryCreateDto, Category>();
 
-            CreateMap<CategoryUpdateDto, Category>();
-        }
+        CreateMap<CategoryUpdateDto, Category>();
     }
 }

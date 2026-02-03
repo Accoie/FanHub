@@ -4,14 +4,14 @@ namespace Infrastructure.PasswordHashers
 {
     public class PasswordHasher : IPasswordHasher
     {
-        public string Hash( string password )
+        public string Hash(string password)
         {
-            return BCrypt.Net.BCrypt.EnhancedHashPassword( password );
+            return BCrypt.Net.BCrypt.EnhancedHashPassword(password);
         }
 
-        public bool VerifyPassword( string password, string passwordHash )
+        public bool VerifyPassword(string password, string passwordHash)
         {
-            return BCrypt.Net.BCrypt.EnhancedVerify( password, passwordHash );
+            return BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
         }
     }
 }

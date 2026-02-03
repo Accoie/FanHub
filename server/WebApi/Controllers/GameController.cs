@@ -1,17 +1,18 @@
 ﻿using Application.Dto.GameDto;
 using Application.Services.Interfaces;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FanHub.Controllers;
 
-[Route( "/api/games" )]
+[Route("/api/games")]
 [ApiController]
 public class GameController : ControllerBase
 {
     private IGameService _gameService;
 
-    public GameController( IGameService gameService )
+    public GameController(IGameService gameService)
     {
         _gameService = gameService;
     }
@@ -21,73 +22,73 @@ public class GameController : ControllerBase
     {
         IReadOnlyList<GameReadDto> games = await _gameService.GetAll();
 
-        return Ok( games );
+        return Ok(games);
     }
 
-    [HttpGet( "with-stats" )]
+    [HttpGet("with-stats")]
     public async Task<ActionResult<List<GameStatsDto>>> GetAllGamesWithStats()
     {
         List<GameStatsDto> games = await _gameService.GetAllGamesWithStats();
 
-        return Ok( games );
+        return Ok(games);
     }
 
-    [HttpGet( "game/name" )]
+    [HttpGet("game/name")]
     public async Task<ActionResult<GameReadDto>> GetGameByName(
-        [FromQuery] string name )
+        [FromQuery] string name)
     {
-        List<GameReadDto> games = await _gameService.SearchGamesByNameAsync( name );
+        List<GameReadDto> games = await _gameService.SearchGamesByNameAsync(name);
 
-        return Ok( games );
+        return Ok(games);
     }
-    [HttpGet( "game/genre" )]
+    [HttpGet("game/genre")]
     public async Task<ActionResult<GameReadDto>> GetGameByGenre(
-        [FromQuery] string name )
+        [FromQuery] string name)
     {
-        List<GameReadDto> games = await _gameService.SearchGamesByGenreAsync( name );
+        List<GameReadDto> games = await _gameService.SearchGamesByGenreAsync(name);
 
-        return Ok( games );
+        return Ok(games);
     }
 
-    [HttpGet( "{id}" )]
-    public async Task<ActionResult<GameReadDto>> GetGameById( int id )
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GameReadDto>> GetGameById(int id)
     {
-        GameReadDto game = await _gameService.GetById( id );
+        GameReadDto game = await _gameService.GetById(id);
 
-        return Ok( game );
+        return Ok(game);
     }
 
-    [HttpGet( "with-stats/{id}" )]
-    public async Task<ActionResult<GameStatsDto>> GetGameWithStatsById( int id )
+    [HttpGet("with-stats/{id}")]
+    public async Task<ActionResult<GameStatsDto>> GetGameWithStatsById(int id)
     {
-        GameStatsDto game = await _gameService.GetGameWithStatsById( id );
+        GameStatsDto game = await _gameService.GetGameWithStatsById(id);
 
-        return Ok( game );
+        return Ok(game);
     }
 
-    [Authorize( Policy = "AdminOnly" )]
+    [Authorize(Policy = "AdminOnly")]
     [HttpPost]
-    public async Task<ActionResult<int>> CreateGame( [FromBody] GameCreateDto dto )
+    public async Task<ActionResult<int>> CreateGame([FromBody] GameCreateDto dto)
     {
-        int id = await _gameService.Create( dto );
+        int id = await _gameService.Create(dto);
 
-        return Ok( id );
+        return Ok(id);
     }
 
-    [Authorize( Policy = "AdminOnly" )]
-    [HttpPut( "{id}" )]
-    public async Task<IActionResult> UpdateGame( int id, [FromBody] GameUpdateDto dto )
+    [Authorize(Policy = "AdminOnly")]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateGame(int id, [FromBody] GameUpdateDto dto)
     {
-        await _gameService.Update( id, dto );
+        await _gameService.Update(id, dto);
 
         return Ok();
     }
 
-    [Authorize( Policy = "AdminOnly" )]
-    [HttpDelete( "{id}" )]
-    public async Task<IActionResult> DeleteGame( int id )
+    [Authorize(Policy = "AdminOnly")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteGame(int id)
     {
-        await _gameService.DeleteAsync( id );
+        await _gameService.DeleteAsync(id);
 
         return Ok();
     }

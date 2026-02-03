@@ -1,8 +1,7 @@
-namespace Application.Dto.NotificationViewedDto
+namespace Application.Dto.NotificationViewedDto;
+
+public class NotificationViewedUpdateDto
 {
-    public class NotificationViewedUpdateDto
-    {
-        public bool? IsHidden { get; set; }
-    }
+    public bool? IsHidden { get; set; }
 }
 

@@ -1,17 +1,18 @@
 ﻿using Application.Dto.ReactionDto;
+
 using AutoMapper;
+
 using Domain.Entities;
-namespace Application.Mapping
+namespace Application.Mapping;
+
+public class ReactionProfile : Profile
 {
-    public class ReactionProfile : Profile
+    public ReactionProfile()
     {
-        public ReactionProfile()
-        {
-            CreateMap<Reaction, ReactionReadDto>();
+        CreateMap<Reaction, ReactionReadDto>();
 
-            CreateMap<ReactionCreateDto, Reaction>();
+        CreateMap<ReactionCreateDto, Reaction>();
 
-            CreateMap<ReactionUpdateDto, Reaction>();
-        }
+        CreateMap<ReactionUpdateDto, Reaction>();
     }
 }

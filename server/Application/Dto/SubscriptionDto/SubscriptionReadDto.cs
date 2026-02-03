@@ -1,13 +1,12 @@
-﻿namespace Application.Dto.SubscriptionDto
+﻿namespace Application.Dto.SubscriptionDto;
+
+public class SubscriptionReadDto
 {
-    public class SubscriptionReadDto
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public int UserId { get; set; }
+    public int UserId { get; set; }
 
-        public int FandomId { get; set; }
+    public int FandomId { get; set; }
 
-        public DateTime Date { get; set; }
-    }
+    public DateTime Date { get; set; }
 }

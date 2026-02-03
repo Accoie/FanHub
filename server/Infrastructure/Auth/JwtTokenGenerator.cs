@@ -1,9 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 using Application.Options;
 using Application.Services.Auth;
+
 using Domain.Enums;
+
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,12 +16,12 @@ namespace Infrastructure.Auth
     {
         IOptions<JwtOptions> _options;
 
-        public JwtTokenGenerator( IOptions<JwtOptions> options )
+        public JwtTokenGenerator(IOptions<JwtOptions> options)
         {
             _options = options;
         }
 
-        public Token GenerateToken( int userId, UserRole role )
+        public Token GenerateToken(int userId, UserRole role)
         {
             List<Claim> claims = new List<Claim>()
             {
@@ -27,17 +30,17 @@ namespace Infrastructure.Auth
             };
 
             SigningCredentials signingCredentials = new SigningCredentials(
-               new SymmetricSecurityKey( Encoding.UTF8.GetBytes( _options.Value.Secret ) ), SecurityAlgorithms.HmacSha256 );
+               new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Value.Secret)), SecurityAlgorithms.HmacSha256);
 
-            DateTime expireDate = DateTime.UtcNow.AddMinutes( _options.Value.TokenValidityInMinutes );
+            DateTime expireDate = DateTime.UtcNow.AddMinutes(_options.Value.TokenValidityInMinutes);
             JwtSecurityToken token = new JwtSecurityToken(
                 signingCredentials: signingCredentials,
                 expires: expireDate,
                 claims: claims
                 );
-            string tokenString = new JwtSecurityTokenHandler().WriteToken( token );
+            string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new Token( tokenString, expireDate );
+            return new Token(tokenString, expireDate);
         }
     }
 }
