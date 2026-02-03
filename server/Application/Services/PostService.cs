@@ -22,6 +22,7 @@ namespace Application.Services
         private readonly IPostRepository _postRepository;
         private readonly IImageTools _imageTools;
         private readonly INotificationRepository _notificationRepository;
+        private readonly INotificationViewedRepository _notificationViewedRepository;
 
         public PostService( IPostRepository repository,
             IFandomService fandomService,
@@ -32,7 +33,8 @@ namespace Application.Services
             ILogger<PostService> logger,
             IUnitOfWork unitOfWork,
             IImageTools imageTools,
-            INotificationRepository notificationRepository ) : base( repository, mapper, validator, logger, unitOfWork )
+            INotificationRepository notificationRepository,
+            INotificationViewedRepository notificationViewedRepository ) : base( repository, mapper, validator, logger, unitOfWork )
         {
             _fandomService = fandomService;
             _categoryRepository = categoryRepository;
@@ -40,6 +42,7 @@ namespace Application.Services
             _postRepository = repository;
             _imageTools = imageTools;
             _notificationRepository = notificationRepository;
+            _notificationViewedRepository = notificationViewedRepository;
         }
 
         public override async Task<List<PostReadDto>> GetAll()
@@ -146,10 +149,22 @@ namespace Application.Services
                 await _imageTools.TryDeleteImageAsync( entity.MediaContent );
             }
 
-            // Удаляем связанные уведомления
-            List<FandomNotification> notifications = await _notificationRepository.FindAllAsync( 
+            List<FandomNotification> notifications = await _notificationRepository.FindAllAsync(
                 n => n.NotifierId == entity.Id && n.Type == FandomNotificationType.NewPost );
-            
+
+            List<NotificationViewed> allVieweds = new();
+            foreach ( FandomNotification notification in notifications )
+            {
+                List<NotificationViewed> vieweds = await _notificationViewedRepository
+                    .GetViewedNotificationsByNotificationIdAsync( notification.Id );
+                allVieweds.AddRange( vieweds );
+            }
+
+            if ( allVieweds.Count > 0 )
+            {
+                await _notificationViewedRepository.BulkDeleteAsync( allVieweds );
+            }
+
             foreach ( FandomNotification notification in notifications )
             {
                 _notificationRepository.Delete( notification );

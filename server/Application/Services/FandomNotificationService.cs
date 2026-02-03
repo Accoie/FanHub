@@ -79,9 +79,8 @@ namespace Application.Services
 
         protected override async Task CleanupBeforeDelete( FandomNotification entity )
         {
-            // Удаляем все просмотры этого уведомления
             List<NotificationViewed> vieweds = await _notificationViewedRepository.GetViewedNotificationsByNotificationIdAsync( entity.Id );
-            
+
             if ( vieweds.Count > 0 )
             {
                 await _notificationViewedRepository.BulkDeleteAsync( vieweds );

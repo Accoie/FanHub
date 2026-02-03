@@ -77,9 +77,9 @@ namespace Application.Services
                 await _imageTools.TryDeleteImageAsync( entity.ImageUrl );
             }
 
-            List<FandomNotification> notifications = await _notificationRepository.FindAllAsync( 
+            List<FandomNotification> notifications = await _notificationRepository.FindAllAsync(
                 n => n.NotifierId == entity.Id && n.Type == FandomNotificationType.NewEvent );
-            
+
             List<NotificationViewed> allVieweds = new();
             foreach ( FandomNotification notification in notifications )
             {
